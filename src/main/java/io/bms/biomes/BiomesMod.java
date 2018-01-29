@@ -1,20 +1,23 @@
 package io.bms.biomes;
 
-import io.bms.biomes.config.BiomesConfig;
-import io.bms.biomes.event.BiomesListener;
+import java.util.Map;
+import java.util.logging.Logger;
+import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.logging.Logger;
+import com.gmail.sharpcastle33.managers.RegionsManager;
+import io.bms.biomes.config.BiomesConfig;
+import io.bms.biomes.event.BiomesListener;
 
 /**
  * Created by benjaminsutter on 7/19/17.
  */
 public class BiomesMod extends JavaPlugin {
     private static BiomesMod instance;
+    public static RegionsManager manager;
 
     public static BiomesMod getInstance() {
         return instance;
@@ -28,6 +31,10 @@ public class BiomesMod extends JavaPlugin {
         FileConfiguration config = getConfig();
         BiomesConfig.initConfig(config);
         saveConfig();
+        
+        
+        Map<String, String> regions = BiomesConfig.loadBiomes();
+        manager = new RegionsManager(regions);
 
         new BiomesListener();
         getServer().getPluginManager().registerEvents(new BiomesListener(), this);

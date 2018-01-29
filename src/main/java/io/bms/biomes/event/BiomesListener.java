@@ -1,6 +1,8 @@
 package io.bms.biomes.event;
 
+import io.bms.biomes.BiomesMod;
 import io.bms.biomes.config.BiomesConfig;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
@@ -16,6 +18,8 @@ import java.util.UUID;
 
 public class BiomesListener implements Listener {
     private HashMap<Biome, HashSet<UUID>> playerMap = new HashMap<>();
+    
+    final static String MAP_PREFIX = ChatColor.BLUE + "[Map]" + ChatColor.WHITE;
 
     public BiomesListener() {
         for (Biome biome : Biome.values()) {
@@ -30,11 +34,11 @@ public class BiomesListener implements Listener {
         World world = player.getWorld();
         Location location = player.getLocation();
         Biome biome = world.getBiome(location.getBlockX(), location.getBlockZ());
-        String customBiomeName = BiomesConfig.getCustomBiomeName(biome, world.getName());
+        String customBiomeName = BiomesMod.manager.getRegionName(biome, world);
         if (customBiomeName != null) {
             if (!playerMap.get(biome).contains(player.getUniqueId())) {
                 playerMap.get(biome).add(player.getUniqueId());
-                player.sendMessage(String.format("[Map] %s", customBiomeName));
+                player.sendMessage(String.format(MAP_PREFIX + " %s", customBiomeName));
             }
         }
         for (Map.Entry<Biome, HashSet<UUID>> entry : playerMap.entrySet()) {
